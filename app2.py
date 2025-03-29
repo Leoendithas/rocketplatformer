@@ -18,15 +18,6 @@ except pygame.error:
 # Initialize the rest of pygame
 pygame.init()
 
-# Later in your code, when playing sounds:
-def play_sound(sound_file):
-    if audio_available:
-        try:
-            sound = pygame.mixer.Sound(sound_file)
-            sound.play()
-        except:
-            pass  # Silently fail if sound still doesn't work
-
 # Constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
