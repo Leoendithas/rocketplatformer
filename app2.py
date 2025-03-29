@@ -6,17 +6,45 @@ import os
 import base64
 from io import BytesIO
 
-# Try to initialize with audio, fall back to no audio if needed
-try:
-    pygame.mixer.init()
-    audio_available = True
-except pygame.error:
-    # We're likely on a server with no audio device
-    os.environ["SDL_AUDIODRIVER"] = "dummy"
-    audio_available = False
+# Function to read audio file and encode it for HTML embedding
+def get_base64_of_bin_file(bin_file):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
 
-# Initialize the rest of pygame
-pygame.init()
+# --- Play Background Music using HTML5 <audio> ---
+audio_file_path = "background.mp3"
+
+try:
+    # Check if file exists
+    if os.path.exists(audio_file_path):
+        # Read and encode the audio file
+        audio_bytes_base64 = get_base64_of_bin_file(audio_file_path)
+
+        # Create the HTML audio tag
+        # - autoplay: Starts playing automatically
+        # - loop: Repeats the audio indefinitely
+        # - controls: (Optional) Shows default browser audio controls - useful for debugging
+        #   Remove 'controls' if you don't want the user to see playback controls.
+        audio_html = f"""
+            <audio autoplay loop>
+                <source src="data:audio/mp3;base64,{audio_bytes_base64}" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+            """
+        # Embed the HTML in the Streamlit app
+        st.markdown(audio_html, unsafe_allow_html=True)
+
+        # Optional: Add a small note or hide it visually if needed
+        # st.write("Playing background music...") # Or use CSS to hide
+
+    else:
+        st.warning(f"Background music file not found: {audio_file_path}")
+        print(f"Background music file not found: {audio_file_path}") # Also print to server logs
+
+except Exception as e:
+    st.error(f"An error occurred loading the background music: {e}")
+    print(f"An error occurred loading the background music: {e}") # Also print to server logs
 
 # Constants
 SCREEN_WIDTH = 800
