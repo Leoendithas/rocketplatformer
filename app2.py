@@ -6,46 +6,6 @@ import os
 import base64
 from io import BytesIO
 
-# Function to read audio file and encode it for HTML embedding
-def get_base64_of_bin_file(bin_file):
-    with open(bin_file, 'rb') as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
-
-# --- Play Background Music using HTML5 <audio> ---
-audio_file_path = "background.mp3"
-
-try:
-    # Check if file exists
-    if os.path.exists(audio_file_path):
-        # Read and encode the audio file
-        audio_bytes_base64 = get_base64_of_bin_file(audio_file_path)
-
-        # Create the HTML audio tag
-        # - autoplay: Starts playing automatically
-        # - loop: Repeats the audio indefinitely
-        # - controls: (Optional) Shows default browser audio controls - useful for debugging
-        #   Remove 'controls' if you don't want the user to see playback controls.
-        audio_html = f"""
-            <audio autoplay loop>
-                <source src="data:audio/mp3;base64,{audio_bytes_base64}" type="audio/mp3">
-                Your browser does not support the audio element.
-            </audio>
-            """
-        # Embed the HTML in the Streamlit app
-        st.markdown(audio_html, unsafe_allow_html=True)
-
-        # Optional: Add a small note or hide it visually if needed
-        # st.write("Playing background music...") # Or use CSS to hide
-
-    else:
-        st.warning(f"Background music file not found: {audio_file_path}")
-        print(f"Background music file not found: {audio_file_path}") # Also print to server logs
-
-except Exception as e:
-    st.error(f"An error occurred loading the background music: {e}")
-    print(f"An error occurred loading the background music: {e}") # Also print to server logs
-
 pygame.init()
 
 # Constants
