@@ -46,6 +46,8 @@ except Exception as e:
     st.error(f"An error occurred loading the background music: {e}")
     print(f"An error occurred loading the background music: {e}") # Also print to server logs
 
+pygame.init()
+
 # Constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
