@@ -6,14 +6,26 @@ import os
 import base64
 from io import BytesIO
 
-# Initialize pygame and the mixer for music
-pygame.init()
-pygame.mixer.init()
+# Try to initialize with audio, fall back to no audio if needed
 try:
-    pygame.mixer.music.load("background.mp3")
-    pygame.mixer.music.play(-1)  # Loop indefinitely
-except Exception as e:
-    print("Background music file not found or failed to load:", e)
+    pygame.mixer.init()
+    audio_available = True
+except pygame.error:
+    # We're likely on a server with no audio device
+    os.environ["SDL_AUDIODRIVER"] = "dummy"
+    audio_available = False
+
+# Initialize the rest of pygame
+pygame.init()
+
+# Later in your code, when playing sounds:
+def play_sound(sound_file):
+    if audio_available:
+        try:
+            sound = pygame.mixer.Sound(sound_file)
+            sound.play()
+        except:
+            pass  # Silently fail if sound still doesn't work
 
 # Constants
 SCREEN_WIDTH = 800
